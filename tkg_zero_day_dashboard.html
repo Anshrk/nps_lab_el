@@ -1,0 +1,121 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TKG Zero-Day Threat Analytics</title>
+        <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+        <style>
+            body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0c0e12; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+            #sidebar { width: 350px; background-color: #161a22; padding: 20px; border-right: 1px solid #30363d; display: flex; flex-direction: column; }
+            #network-canvas { flex-grow: 1; height: 100%; }
+            h2 { font-size: 18px; border-bottom: 1px solid #30363d; padding-bottom: 10px; margin-top: 0; color: #58a6ff; }
+            .control-group { margin-bottom: 25px; }
+            label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
+            input[type=range] { width: 100%; cursor: pointer; }
+            .slider-ticks { display: flex; justify-content: space-between; font-size: 12px; color: #8b949e; padding-top: 5px; }
+            #log-panel { background-color: #000; flex-grow: 1; border-radius: 5px; padding: 10px; font-family: 'Courier New', Courier, monospace; font-size: 12px; overflow-y: auto; border: 1px solid #30363d; }
+            .log-entry { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #333; }
+            .log-alert { color: #ff4444; font-weight: bold; }
+            .log-safe { color: #3fb950; }
+        </style>
+    </head>
+    <body>
+
+    <div id="sidebar">
+        <h2>Threat Detection Controls</h2>
+        
+        <div class="control-group">
+            <label>Network Scale (Data Volume Noise)</label>
+            <input type="range" id="scaleSlider" min="1" max="3" value="3" oninput="updateGraph()">
+            <div class="slider-ticks"><span>Low</span><span>Medium</span><span>High</span></div>
+        </div>
+
+        <div class="control-group">
+            <label>Temporal Timeline (Time Step)</label>
+            <input type="range" id="timeSlider" min="1" max="4" value="4" oninput="updateGraph()">
+            <div class="slider-ticks"><span>t1: Init</span><span>t2: Ops</span><span>t3: Breach</span><span>t4: Exfil</span></div>
+        </div>
+
+        <h2>Live Security Log</h2>
+        <div id="log-panel"></div>
+    </div>
+
+    <div id="network-canvas"></div>
+
+    <script type="text/javascript">
+        // Data Injected from Python
+        const rawNodes = [{"id": "Ext_Attacker", "label": "External IP", "group": "threat", "scale_level": 1}, {"id": "Web_01", "label": "Web Server 01", "group": "server", "scale_level": 1}, {"id": "Switch_Core", "label": "Core Switch", "group": "hardware", "scale_level": 1}, {"id": "DB_Active", "label": "Primary DB", "group": "server", "scale_level": 1}, {"id": "Ext_C2", "label": "Command & Control", "group": "threat", "scale_level": 1}, {"id": "Subnet_Alpha", "label": "Subnet Alpha", "group": "subnet", "scale_level": 1}, {"id": "Web_02", "label": "Web Server 02", "group": "server", "scale_level": 2}, {"id": "Switch_Edge", "label": "Edge Switch", "group": "hardware", "scale_level": 2}, {"id": "DB_Replica", "label": "Replica DB", "group": "server", "scale_level": 2}, {"id": "Subnet_Beta", "label": "Subnet Beta", "group": "subnet", "scale_level": 2}, {"id": "Host_A_1", "label": "Host 10.0.1.1", "group": "endpoint", "scale_level": 2}, {"id": "Host_A_2", "label": "Host 10.0.1.2", "group": "endpoint", "scale_level": 2}, {"id": "Host_A_3", "label": "Host 10.0.1.3", "group": "endpoint", "scale_level": 2}, {"id": "Host_A_4", "label": "Host 10.0.1.4", "group": "endpoint", "scale_level": 2}, {"id": "Host_A_5", "label": "Host 10.0.1.5", "group": "endpoint", "scale_level": 2}, {"id": "Switch_DMZ", "label": "DMZ Gateway", "group": "hardware", "scale_level": 3}, {"id": "Subnet_Gamma", "label": "Subnet Gamma", "group": "subnet", "scale_level": 3}, {"id": "Subnet_Delta", "label": "Subnet Delta", "group": "subnet", "scale_level": 3}, {"id": "Host_B_1", "label": "Host 172.16.1.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_2", "label": "Host 172.16.2.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_3", "label": "Host 172.16.3.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_4", "label": "Host 172.16.4.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_5", "label": "Host 172.16.5.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_6", "label": "Host 172.16.6.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_7", "label": "Host 172.16.7.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_8", "label": "Host 172.16.8.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_9", "label": "Host 172.16.9.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_10", "label": "Host 172.16.10.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_11", "label": "Host 172.16.11.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_12", "label": "Host 172.16.12.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_13", "label": "Host 172.16.13.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_14", "label": "Host 172.16.14.10", "group": "endpoint", "scale_level": 3}, {"id": "Host_B_15", "label": "Host 172.16.15.10", "group": "endpoint", "scale_level": 3}];
+        const rawEdges = [{"id": 1, "from": "Subnet_Alpha", "to": "Switch_Core", "title": "Relation: ROUTES_TO<br>Z-Score: 0.0", "time_step": 1, "scale_level": 1, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 2, "from": "Subnet_Beta", "to": "Switch_Edge", "title": "Relation: ROUTES_TO<br>Z-Score: 0.0", "time_step": 1, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 3, "from": "Subnet_Gamma", "to": "Switch_DMZ", "title": "Relation: ROUTES_TO<br>Z-Score: 0.0", "time_step": 1, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 4, "from": "Subnet_Delta", "to": "Switch_DMZ", "title": "Relation: ROUTES_TO<br>Z-Score: 0.0", "time_step": 1, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 5, "from": "Switch_Core", "to": "Web_01", "title": "Relation: POLLS_STATUS<br>Z-Score: 0.0", "time_step": 2, "scale_level": 1, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 6, "from": "Web_01", "to": "DB_Active", "title": "Relation: QUERIES_DATA<br>Z-Score: 0.0", "time_step": 2, "scale_level": 1, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 7, "from": "Switch_Edge", "to": "Switch_Core", "title": "Relation: UPLINK<br>Z-Score: 0.0", "time_step": 2, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 8, "from": "DB_Active", "to": "DB_Replica", "title": "Relation: REPLICATES<br>Z-Score: 0.0", "time_step": 2, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 9, "from": "Switch_DMZ", "to": "Web_02", "title": "Relation: FORWARDS<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 10, "from": "Host_A_1", "to": "Switch_Edge", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 11, "from": "Host_A_2", "to": "Switch_Edge", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 12, "from": "Host_A_3", "to": "Switch_Edge", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 13, "from": "Host_A_4", "to": "Switch_Edge", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 14, "from": "Host_A_5", "to": "Switch_Edge", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 2, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 15, "from": "Host_B_1", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 16, "from": "Host_B_2", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 17, "from": "Host_B_3", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 18, "from": "Host_B_4", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 19, "from": "Host_B_5", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 20, "from": "Host_B_6", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 21, "from": "Host_B_7", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 22, "from": "Host_B_8", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 23, "from": "Host_B_9", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 24, "from": "Host_B_10", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 25, "from": "Host_B_11", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 26, "from": "Host_B_12", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 27, "from": "Host_B_13", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 28, "from": "Host_B_14", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 29, "from": "Host_B_15", "to": "Switch_DMZ", "title": "Relation: SENDS_PACKET<br>Z-Score: 0.0", "time_step": 2, "scale_level": 3, "color": {"color": "#3a4b5c", "highlight": "#3a4b5c"}, "width": 1, "is_threat": false, "arrows": "to"}, {"id": 30, "from": "Ext_Attacker", "to": "Web_01", "title": "Relation: EXPLOITS_VULN<br>Z-Score: 99.9", "time_step": 3, "scale_level": 1, "color": {"color": "#ff2a55", "highlight": "#ff2a55"}, "width": 4, "is_threat": true, "arrows": "to"}, {"id": 31, "from": "Web_01", "to": "Switch_Core", "title": "Relation: PIVOTS<br>Z-Score: 14.5", "time_step": 3, "scale_level": 1, "color": {"color": "#ff2a55", "highlight": "#ff2a55"}, "width": 4, "is_threat": true, "arrows": "to"}, {"id": 32, "from": "Switch_Core", "to": "DB_Active", "title": "Relation: MALICIOUS_FIRMWARE<br>Z-Score: 22.1", "time_step": 4, "scale_level": 1, "color": {"color": "#ff2a55", "highlight": "#ff2a55"}, "width": 4, "is_threat": true, "arrows": "to"}, {"id": 33, "from": "DB_Active", "to": "Ext_C2", "title": "Relation: EXFILTRATES_DATA<br>Z-Score: 99.9", "time_step": 4, "scale_level": 1, "color": {"color": "#ff2a55", "highlight": "#ff2a55"}, "width": 4, "is_threat": true, "arrows": "to"}];
+        
+        // Initialize Vis.js Datasets
+        const nodesData = new vis.DataSet(rawNodes);
+        const edgesData = new vis.DataSet(rawEdges);
+
+        const container = document.getElementById('network-canvas');
+        const data = { nodes: nodesData, edges: edgesData };
+        const options = {
+            nodes: {
+                font: { color: '#ffffff' },
+                borderWidth: 2
+            },
+            groups: {
+                threat: { shape: 'triangle', color: '#ff4444', size: 30 },
+                hardware: { shape: 'square', color: '#ffd166', size: 20 },
+                server: { shape: 'database', color: '#06d6a0', size: 25 },
+                subnet: { shape: 'hexagon', color: '#4dadff', size: 25 },
+                endpoint: { shape: 'dot', color: '#8b949e', size: 12 }
+            },
+            physics: {
+                forceAtlas2Based: { gravitationalConstant: -150, centralGravity: 0.02, springLength: 100 },
+                solver: 'forceAtlas2Based'
+            }
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        function updateGraph() {
+            const currentScale = parseInt(document.getElementById('scaleSlider').value);
+            const currentTime = parseInt(document.getElementById('timeSlider').value);
+            const logPanel = document.getElementById('log-panel');
+            
+            // 1. Filter Nodes based on Scale
+            const nodesToUpdate = rawNodes.map(node => ({
+                id: node.id,
+                hidden: node.scale_level > currentScale
+            }));
+            nodesData.update(nodesToUpdate);
+
+            // 2. Filter Edges based on Scale AND Time Step
+            let activeLogs = "";
+            const edgesToUpdate = rawEdges.map(edge => {
+                const isHidden = (edge.scale_level > currentScale) || (edge.time_step > currentTime);
+                
+                // Update the security log if the edge is visible
+                if (!isHidden && edge.time_step === currentTime) {
+                    if (edge.is_threat) {
+                        activeLogs += `<div class="log-entry log-alert">[CRITICAL] Temporal Anomaly!<br>Velocity Z-Score: ${edge.z_score}<br>${edge.from} &rarr; ${edge.to}</div>`;
+                    } else {
+                        activeLogs += `<div class="log-entry log-safe">[OK] Baseline Op<br>${edge.from} &rarr; ${edge.to}</div>`;
+                    }
+                }
+                
+                return { id: edge.id, hidden: isHidden };
+            });
+            edgesData.update(edgesToUpdate);
+            
+            // Generate contextual log headers
+            let timeContext = "t1: Baseline Topology Initialization";
+            if (currentTime === 2) timeContext = "t2: Normal Network Operations (Baseline Locked)";
+            if (currentTime === 3) timeContext = "t3: ALARM - Structural Velocity Spike Detected";
+            if (currentTime === 4) timeContext = "t4: ALARM - Lateral Movement & Exfiltration";
+            
+            logPanel.innerHTML = `<strong>Current State: ${timeContext}</strong><br><br>` + activeLogs;
+        }
+
+        // Initialize state on load
+        updateGraph();
+    </script>
+    </body>
+    </html>
+    

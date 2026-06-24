@@ -1,0 +1,6 @@
+datacenter_location,router_name,interface_ip
+"Iceland, Rekjavik",DC1-RE,10.0.0.254
+"Iceland, Rekjavik",DC1-R-1,10.1.0.254
+"Iceland, Rekjavik",DC1-R-2,10.2.0.254
+"Iceland, Rekjavik",DC1-R-3,10.3.0.254
+"Iceland, Rekjavik",DC1-R-4,10.4.0.254

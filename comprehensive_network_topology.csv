@@ -1,0 +1,6 @@
+datacenter_location,router_name,interface_ip,link_type,latency_ms,bandwidth_gbps,vulnerability_score,node_status,last_security_scan
+"Iceland, Rekjavik",DC1-RE,10.0.0.254,Backbone Corridor,48,200,0.44,Active,2026-06-14T15:58:03Z
+"Iceland, Rekjavik",DC1-R-1,10.1.0.254,Edge Interface,17,10,0.41,Active,2026-06-15T14:00:03Z
+"Iceland, Rekjavik",DC1-R-2,10.2.0.254,Edge Interface,22,40,0.26,Active,2026-06-15T09:17:03Z
+"Iceland, Rekjavik",DC1-R-3,10.3.0.254,Backbone Corridor,25,200,0.29,Active,2026-06-15T10:45:03Z
+"Iceland, Rekjavik",DC1-R-4,10.4.0.254,Backbone Corridor,35,200,0.6,Vulnerable,2026-06-15T10:39:03Z

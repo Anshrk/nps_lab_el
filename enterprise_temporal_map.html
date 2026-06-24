@@ -1,0 +1,232 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 850px;
+                 background-color: #090b0e;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="Subnet_01">Subnet_01</option>
+                                
+                                    <option value="Switch_Alpha">Switch_Alpha</option>
+                                
+                                    <option value="Switch_Core">Switch_Core</option>
+                                
+                                    <option value="Host_10_0_1_10">Host_10_0_1_10</option>
+                                
+                                    <option value="Host_10_0_1_11">Host_10_0_1_11</option>
+                                
+                                    <option value="Host_10_0_1_12">Host_10_0_1_12</option>
+                                
+                                    <option value="Host_10_0_1_13">Host_10_0_1_13</option>
+                                
+                                    <option value="Host_10_0_1_14">Host_10_0_1_14</option>
+                                
+                                    <option value="Host_10_0_1_15">Host_10_0_1_15</option>
+                                
+                                    <option value="Host_10_0_1_16">Host_10_0_1_16</option>
+                                
+                                    <option value="Host_10_0_1_17">Host_10_0_1_17</option>
+                                
+                                    <option value="Host_10_0_1_18">Host_10_0_1_18</option>
+                                
+                                    <option value="Host_10_0_1_19">Host_10_0_1_19</option>
+                                
+                                    <option value="Gateway_DMZ">Gateway_DMZ</option>
+                                
+                                    <option value="DB_Active">DB_Active</option>
+                                
+                                    <option value="Subnet_02">Subnet_02</option>
+                                
+                                    <option value="Subnet_03">Subnet_03</option>
+                                
+                                    <option value="Subnet_04">Subnet_04</option>
+                                
+                                    <option value="Switch_Beta">Switch_Beta</option>
+                                
+                                    <option value="Host_172_16_2_50">Host_172_16_2_50</option>
+                                
+                                    <option value="Host_172_16_2_51">Host_172_16_2_51</option>
+                                
+                                    <option value="Host_172_16_2_52">Host_172_16_2_52</option>
+                                
+                                    <option value="Host_172_16_2_53">Host_172_16_2_53</option>
+                                
+                                    <option value="Host_172_16_2_54">Host_172_16_2_54</option>
+                                
+                                    <option value="Host_172_16_2_55">Host_172_16_2_55</option>
+                                
+                                    <option value="Host_172_16_2_56">Host_172_16_2_56</option>
+                                
+                                    <option value="Host_172_16_2_57">Host_172_16_2_57</option>
+                                
+                                    <option value="Host_172_16_2_58">Host_172_16_2_58</option>
+                                
+                                    <option value="Host_172_16_2_59">Host_172_16_2_59</option>
+                                
+                                    <option value="Subnet_05">Subnet_05</option>
+                                
+                                    <option value="Web_Server_01">Web_Server_01</option>
+                                
+                                    <option value="Web_Server_02">Web_Server_02</option>
+                                
+                                    <option value="App_Server_Logic">App_Server_Logic</option>
+                                
+                                    <option value="DB_Replica">DB_Replica</option>
+                                
+                                    <option value="External_Command_Control">External_Command_Control</option>
+                                
+                                    <option value="External_Unmapped_IP">External_Unmapped_IP</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#4dadff", "font": {"color": "#ffffff"}, "group": "subnet", "id": "Subnet_01", "label": "Subnet_01", "shape": "hexagon", "size": 26}, {"color": "#ffd166", "font": {"color": "#ffffff"}, "group": "hardware", "id": "Switch_Alpha", "label": "Switch_Alpha", "shape": "square", "size": 22}, {"color": "#ffd166", "font": {"color": "#ffffff"}, "group": "hardware", "id": "Switch_Core", "label": "Switch_Core", "shape": "square", "size": 22}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_10", "label": "Host_10_0_1_10", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_11", "label": "Host_10_0_1_11", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_12", "label": "Host_10_0_1_12", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_13", "label": "Host_10_0_1_13", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_14", "label": "Host_10_0_1_14", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_15", "label": "Host_10_0_1_15", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_16", "label": "Host_10_0_1_16", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_17", "label": "Host_10_0_1_17", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_18", "label": "Host_10_0_1_18", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_10_0_1_19", "label": "Host_10_0_1_19", "shape": "dot", "size": 14}, {"color": "#ffd166", "font": {"color": "#ffffff"}, "group": "hardware", "id": "Gateway_DMZ", "label": "Gateway_DMZ", "shape": "square", "size": 22}, {"color": "#06d6a0", "font": {"color": "#ffffff"}, "group": "server", "id": "DB_Active", "label": "DB_Active", "shape": "database", "size": 24}, {"color": "#4dadff", "font": {"color": "#ffffff"}, "group": "subnet", "id": "Subnet_02", "label": "Subnet_02", "shape": "hexagon", "size": 26}, {"color": "#4dadff", "font": {"color": "#ffffff"}, "group": "subnet", "id": "Subnet_03", "label": "Subnet_03", "shape": "hexagon", "size": 26}, {"color": "#4dadff", "font": {"color": "#ffffff"}, "group": "subnet", "id": "Subnet_04", "label": "Subnet_04", "shape": "hexagon", "size": 26}, {"color": "#ffd166", "font": {"color": "#ffffff"}, "group": "hardware", "id": "Switch_Beta", "label": "Switch_Beta", "shape": "square", "size": 22}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_50", "label": "Host_172_16_2_50", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_51", "label": "Host_172_16_2_51", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_52", "label": "Host_172_16_2_52", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_53", "label": "Host_172_16_2_53", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_54", "label": "Host_172_16_2_54", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_55", "label": "Host_172_16_2_55", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_56", "label": "Host_172_16_2_56", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_57", "label": "Host_172_16_2_57", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_58", "label": "Host_172_16_2_58", "shape": "dot", "size": 14}, {"color": "#83c5be", "font": {"color": "#ffffff"}, "group": "endpoint", "id": "Host_172_16_2_59", "label": "Host_172_16_2_59", "shape": "dot", "size": 14}, {"color": "#4dadff", "font": {"color": "#ffffff"}, "group": "subnet", "id": "Subnet_05", "label": "Subnet_05", "shape": "hexagon", "size": 26}, {"color": "#06d6a0", "font": {"color": "#ffffff"}, "group": "server", "id": "Web_Server_01", "label": "Web_Server_01", "shape": "database", "size": 24}, {"color": "#06d6a0", "font": {"color": "#ffffff"}, "group": "server", "id": "Web_Server_02", "label": "Web_Server_02", "shape": "database", "size": 24}, {"color": "#06d6a0", "font": {"color": "#ffffff"}, "group": "server", "id": "App_Server_Logic", "label": "App_Server_Logic", "shape": "database", "size": 24}, {"color": "#06d6a0", "font": {"color": "#ffffff"}, "group": "server", "id": "DB_Replica", "label": "DB_Replica", "shape": "database", "size": 24}, {"color": "#ff4a4a", "font": {"color": "#ffffff"}, "group": "threat", "id": "External_Command_Control", "label": "External_Command_Control", "shape": "triangle", "size": 30}, {"color": "#ff4a4a", "font": {"color": "#ffffff"}, "group": "threat", "id": "External_Unmapped_IP", "label": "External_Unmapped_IP", "shape": "triangle", "size": 30}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#3a4b5c", "from": "Subnet_01", "title": "Relation: ROUTES_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Switch_Alpha", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: UPLINKS_TO\nLast Observed: 12:39:39", "to": "Switch_Core", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_10", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_11", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_12", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_13", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_14", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_15", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_16", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_17", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_18", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Alpha", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_10_0_1_19", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Core", "title": "Relation: ROUTES_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Gateway_DMZ", "width": 1}, {"arrows": "to", "color": "#ff2a55", "from": "Switch_Core", "title": "Relation: FORCES_MALICIOUS_FIRMWARE\nLast Observed: 13:09:39", "to": "DB_Active", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Subnet_02", "title": "Relation: ROUTES_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Switch_Alpha", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Subnet_03", "title": "Relation: ROUTES_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Switch_Alpha", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Subnet_04", "title": "Relation: ROUTES_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Switch_Beta", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: UPLINKS_TO\nLast Observed: 12:39:39", "to": "Switch_Core", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_50", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_51", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_52", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_53", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_54", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_55", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_56", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_57", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_58", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Switch_Beta", "title": "Relation: POLLS_STATUS\nLast Observed: 12:39:39", "to": "Host_172_16_2_59", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Subnet_05", "title": "Relation: ROUTES_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Switch_Beta", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Gateway_DMZ", "title": "Relation: FORWARDS_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Web_Server_01", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Gateway_DMZ", "title": "Relation: FORWARDS_TRAFFIC_TO\nLast Observed: 12:39:39", "to": "Web_Server_02", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "Web_Server_01", "title": "Relation: QUERIES_DATA_FROM\nLast Observed: 12:39:39", "to": "App_Server_Logic", "width": 1}, {"arrows": "to", "color": "#ff2a55", "from": "Web_Server_01", "title": "Relation: PIVOTS_RECONNAISSANCE\nLast Observed: 13:04:39", "to": "Switch_Core", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "App_Server_Logic", "title": "Relation: COMMITS_TO\nLast Observed: 12:39:39", "to": "DB_Active", "width": 1}, {"arrows": "to", "color": "#3a4b5c", "from": "DB_Active", "title": "Relation: REPLICATES_TO\nLast Observed: 12:39:39", "to": "DB_Replica", "width": 1}, {"arrows": "to", "color": "#ff2a55", "from": "DB_Active", "title": "Relation: EXFILTRATES_DUMP\nLast Observed: 13:14:39", "to": "External_Command_Control", "width": 1}, {"arrows": "to", "color": "#ff2a55", "from": "External_Unmapped_IP", "title": "Relation: EXPLOITS_PORT_80\nLast Observed: 12:59:39", "to": "Web_Server_01", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"barnesHut": {"gravitationalConstant": -6000, "centralGravity": 0.1, "springLength": 120, "springConstant": 0.04}, "solver": "barnesHut"}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
