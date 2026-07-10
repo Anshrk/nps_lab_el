@@ -15,9 +15,9 @@ import sys
 # ==========================================
 # DATABASE CONFIGURATION
 # ==========================================
-NEO4J_URI = "bolt://3.236.156.185:7687"
+NEO4J_URI = "bolt://44.220.85.253:7687"
 NEO4J_USER = "neo4j"
-NEO4J_PASS = "projectiles-fantails-electrodes"
+NEO4J_PASS = "lamp-leaf-parallels"
 
 # ==========================================
 # 1. DATA INGESTION (Neo4j & Fallback)
