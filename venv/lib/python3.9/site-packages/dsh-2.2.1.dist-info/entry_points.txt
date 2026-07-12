@@ -1,0 +1,4 @@
+
+        [console_scripts]
+        dsh=dsh.main:cli
+    
